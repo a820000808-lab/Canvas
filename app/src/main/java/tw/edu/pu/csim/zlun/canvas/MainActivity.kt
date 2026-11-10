@@ -23,7 +23,6 @@ class MainActivity : ComponentActivity() {
         setContent {
             CanvasTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    // 呼叫您提供的 TestCanvas 繪圖元件
                     TestCanvas(
                         modifier = Modifier.padding(innerPadding)
                     )
@@ -51,6 +50,16 @@ fun TestCanvas(modifier: Modifier = Modifier) {
             Offset(300f, 200f),
             Size(200f, 200f),
             style = Stroke(width = 5f) // 使用 style 控制外框樣式
+        )
+
+        // 繪製紅色的線，從 (200,800) 畫到右下角，線條粗細 10
+        // size.width：畫布的總寬度（Float）
+        // size.height：畫布的總高度（Float）
+        drawLine(
+            Color.Red,
+            Offset(200f, 800f),
+            Offset(size.width, size.height),
+            strokeWidth = 10f
         )
     }
 }
