@@ -63,11 +63,11 @@ fun TestCanvas(modifier: Modifier = Modifier) {
     var posX by remember { mutableFloatStateOf(0f) }
     var posY by remember { mutableFloatStateOf(0f) }
 
-    // 速度變數：每秒往右 10 像素、往下 20 像素（若要完美 45 度反彈，速度量值可設為一致，此處依您需求保留方向，並在碰到邊緣時將速度正負號反轉）
-    var velocityX by remember { mutableFloatStateOf(100f) }
-    var velocityY by remember { mutableFloatStateOf(100f)}
+    // 速度變數
+    val velocityX = 100f
+    val velocityY = 100f
 
-    // 當 isPlaying 為 true 時，每隔 50ms 更新位置並偵測邊界碰撞
+    // 當 isPlaying 為 true 時，每隔 50ms 更新位置
     LaunchedEffect(isPlaying) {
         while (isPlaying) {
             delay(50) // 每 50 毫秒 (0.05秒) 更新一次
@@ -87,21 +87,12 @@ fun TestCanvas(modifier: Modifier = Modifier) {
             val imageWidth = minionsImage.width.toFloat()
             val imageHeight = minionsImage.height.toFloat()
 
-            // 邊界碰撞檢測（當碰到左右或上下邊緣時，反轉對應的速度方向）
-            if (posX <= 0f) {
+            // ==========================================
+            // 修改處：當圖片完全跑出畫布右側或下方時，回到原點 (0, 0)
+            // ==========================================
+            if (posX > canvasWidth || posY > canvasHeight) {
                 posX = 0f
-                velocityX = -velocityX // 碰到左邊反彈
-            } else if (posX + imageWidth >= canvasWidth) {
-                posX = canvasWidth - imageWidth
-                velocityX = -velocityX // 碰到右邊反彈
-            }
-
-            if (posY <= 0f) {
                 posY = 0f
-                velocityY = -velocityY // 碰到上面反彈
-            } else if (posY + imageHeight >= canvasHeight) {
-                posY = canvasHeight - imageHeight
-                velocityY = -velocityY // 碰到下面反彈
             }
 
             // 繪製洋紅色的圓, 半徑 100, 圓心 (250,700)
