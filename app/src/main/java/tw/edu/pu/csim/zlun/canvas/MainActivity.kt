@@ -1,5 +1,6 @@
 package tw.edu.pu.csim.zlun.canvas
 
+import android.graphics.Paint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -15,7 +16,9 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.drawscope.translate
+import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.res.imageResource
 import tw.edu.pu.csim.zlun.canvas.ui.theme.CanvasTheme
 
@@ -44,11 +47,11 @@ fun TestCanvas(modifier: Modifier = Modifier) {
     Canvas(
         modifier = modifier.fillMaxSize()
     ) {
-        // 繪製洋紅色的圓, 半徑 100, 圓心 (100,100)
+        // 繪製洋紅色的圓, 半徑 100, 圓心 (250,700)
         drawCircle(
             Color.Magenta,
             100f,
-            Offset(100f, 100f)
+            Offset(250f, 700f)
         )
 
         // 繪製藍色空心矩形, 左上角 (300,200), 寬度與高度 200
@@ -60,8 +63,6 @@ fun TestCanvas(modifier: Modifier = Modifier) {
         )
 
         // 繪製紅色的線，從 (200,800) 畫到右下角，線條粗細 10
-        // size.width：畫布的總寬度（Float）
-        // size.height：畫布的總高度（Float）
         drawLine(
             Color.Red,
             Offset(200f, 800f),
@@ -69,17 +70,27 @@ fun TestCanvas(modifier: Modifier = Modifier) {
             strokeWidth = 10f
         )
 
-        // 取得小兵圖檔的寬度與高度
-        val minionsWidth = minionsImage.width
-        val minionsHeight = minionsImage.height
+        // ==========================================
+        // 將圖片放在左上角 (offsetX = 0f, offsetY = 0f)
+        // ==========================================
+        val offsetX = 0f
+        val offsetY = 0f
 
-        // 置中公式：(畫布寬高 - 圖片寬高) / 2f
-        val offsetX = (size.width - minionsWidth) / 2f
-        val offsetY = (size.height - minionsHeight) / 2f
-
-        // 將畫布起點移至置中位置後畫圖
+        // 將畫布起點移至左上角後畫圖
         translate(offsetX, offsetY) {
             drawImage(minionsImage)
+        }
+
+        // 顯示畫布寬度與高度
+        val resolutionText = "畫布寬度：${size.width.toInt()} , 畫布高度：${size.height.toInt()}"
+        drawIntoCanvas { canvas ->
+            val paint = Paint().apply {
+                color = android.graphics.Color.BLACK
+                textSize = 40f
+                isAntiAlias = true
+            }
+            // 在座標 (50, 150) 的位置繪製文字
+            canvas.nativeCanvas.drawText(resolutionText, 0f, 0f, paint)
         }
     }
 }
